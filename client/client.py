@@ -30,7 +30,6 @@ class FileSystemClient():
                 raise ValueError("Invalid peer format: {}".format(peer))
         self.name = name
         self.hostname = hostname
-        # self.notebook = DistributedNotebook(id=name+":"+str(port))
         self.fileSystem = DistributedFileSystem(id=name+":"+str(port))
         # The client listens and responds to sync messages on another thread.
         # Therefore, notebook accesses are critical sections and must be protected by a
@@ -40,6 +39,9 @@ class FileSystemClient():
         self.connected = False
 
     def toggle_connection(self):
+        """
+        Toggles the connection state of the client.
+        """
         with self.lock:
             self.connected = not self.connected
         print(f"State of {self.name} changed to {self.connected}")
@@ -61,7 +63,9 @@ class FileSystemClient():
         return list(self.peers.keys())
         
     def auto_sync(self):
-        
+        """
+        Syncs with all peers at random intervals.
+        """
         last_synced_time = time.time()
         random_sync_interval = 10 + 5 *random.random() 
         while True:

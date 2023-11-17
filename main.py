@@ -7,6 +7,7 @@ from ui.editor import FileSystemEditor
 
 def start_notebook(listen, peers, name):
     host_parts = listen.split(":")
+    # You can use this to run it locally, or with a peer
     if len(host_parts) == 1:
         hostname = "localhost"
         port = int(host_parts[0])

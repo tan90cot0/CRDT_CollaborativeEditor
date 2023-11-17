@@ -13,7 +13,6 @@ class FileSystemEditor():
         self.curr_file = None
         self.files = []
         self.heading = None
-        # self.notebooks = {}
         self.notebook = []
         self.file_index = 0
         if self.client is not None:
@@ -30,7 +29,6 @@ class FileSystemEditor():
             self.client.attach_editor(self)
         
     def disconnect(self):
-        # self.client.disconnect()
         print('Disconnected Clicked ... ')
         self.disconnect_widget.destroy()
         self.disconnect_widget = None
@@ -40,7 +38,6 @@ class FileSystemEditor():
         Connect.grid(row=0, column=6)
     
     def connect(self):
-        # self.client.connect()
         print('Connected Clicked')
         self.client.toggle_connection()
         self.connect_widget.destroy()
@@ -67,7 +64,6 @@ class FileSystemEditor():
             self.client.create_file(name)
 
         self.file_index += 1
-        # self.notebooks[name]=[]
         for cell in self.notebook:
                 cell.destroy()
         self.notebook = []
@@ -125,7 +121,6 @@ class FileSystemEditor():
         text.grid(row=5*depth+1, column=2, columnspan = 5, rowspan = 5)
         text.insert("end", initial_text)
         text.bind("<KeyRelease>", self.edit_cell_callback)
-        # text.pack(side="bottom")
         
         # Button to insert a new cell
         add = tk.Button(cell, text="+", command=lambda: self.add_cell(cell), width=SMALL_BUTTON_WIDTH, height=SMALL_BUTTON_HEIGHT)
@@ -144,10 +139,6 @@ class FileSystemEditor():
         self.notebook.remove(cell)
         cell.destroy()
         self.render()
-
-    # def sync(self, peer):
-    #     self.client.sync(peer)
-    #     self.render()
 
     def render(self):
         """
@@ -173,7 +164,6 @@ class FileSystemEditor():
             file_data = self.client.get_file_data()
 
             for filename in file_data:
-                # print(filename)
                 self.file_index+=1
                 new_file = tk.Button(self.root, text=str(filename), command= lambda f=filename: self.open_file(f), width=10, height=SMALL_BUTTON_HEIGHT)
                 new_file.grid(row=self.file_index, column = 0)
@@ -181,8 +171,6 @@ class FileSystemEditor():
                 delete.grid(row=self.file_index, column = 1)
                 self.files.append((new_file, delete))
             
-            # for file in self.files:
-            #     print(file['text'])
 
             if self.curr_file is not None:
                 cell_data = self.client.get_cell_data(self.curr_file)
@@ -191,9 +179,7 @@ class FileSystemEditor():
                 cell_data = self.client.get_cell_data(self.curr_file)
             else:
                 cell_data = None
-            
-            # print(self.curr_file)
-            # print(cell_data)
+
             if cell_data is not None:
                 file = tk.Label(self.root, text=self.curr_file, width=10, height=TOP_ROW_HEIGHT)
                 file.grid(row= 0, column = 2)
@@ -217,128 +203,3 @@ class FileSystemEditor():
         """
         # self.add_cell()
         self.root.mainloop()
-
-    
-
-
-# class NotebookEditor():
-#     """
-#     NotebookEditor defines the UI for a simple notebook editor using tkinter. It
-#     optionally takes a DistributedNotebook object as input to synchronize with.
-#     """
-#     def __init__(self, client=None):
-#         self.root = tk.Tk()
-#         self.root.title(client.name if client is not None else "Untitled Notebook")
-#         self.client = client
-#         self.cells = []
-#         self.files = []
-#         if self.client is not None:
-#             # for peer in self.client.get_peers():
-#                 # tk.Button(self.root, text="sync with {}".format(peer), command=lambda p=peer: self.sync(p)).pack(side="top")
-#             Files = tk.Label(self.root, text="Files")
-#             Add = tk.Button(self.root, text="+", command= lambda: self.add_name())
-#             Refresh = tk.Button(self.root, text="Refresh")
-#             Files.grid(row = 0, column = 0)
-#             Add.grid(row = 0, column = 1)
-#             Refresh.grid(row = 0, column = 7)
-#             self.client.attach_editor(self)
-
-#     def add_file(self, submit, file_name):
-#         new_file = tk.Button(self.root, text=file_name.get())
-#         submit.destroy()
-#         file_name.destroy()
-#         new_file.grid(column = 0)
-
-#     def add_name(self):
-#         file_name = tk.Entry(self.root, width=10, height=5)
-#         submit = tk.Button(self.root, text="submit", command=lambda: self.add_file(submit, file_name))
-#         file_name.grid(column = 0)
-#         submit.grid(column = 1)
-
-#     def add_cell(self, after=None):
-#         cell = self.create_cell_frame()
-
-#         # Figure out if where to insert or append the cell based on which cell the add
-#         # button was clicked
-#         if after in self.cells:
-#             index = self.cells.index(after) + 1
-#         else:
-#             index = len(self.cells)
-
-#         if index >= len(self.cells):
-#             self.cells.append(cell)
-#             if self.client is not None:
-#                 self.client.create_cell()
-#         else:
-#             self.cells.insert(index, cell)
-#             if self.client is not None:
-#                 self.client.create_cell(index)
-#         self.render()
-
-#     def create_cell_frame(self, after=None, initial_text=''):
-#         # Create the subframe to hold the cell widgets
-#         cell = tk.Frame(self.root)
-
-#         # Button to remove the cell
-#         remove = tk.Button(cell, text="X", command=lambda: self.remove_cell(cell))
-#         remove.grid(column=7)
-        
-#         # Text editor widget
-#         text = tk.Text(cell, wrap="char", highlightbackground="gray")
-#         text.grid(column=2, columnspan = 5, rowspan = 5)
-#         text.insert("end", initial_text)
-#         text.bind("<KeyRelease>", self.edit_cell_callback)
-#         # text.pack(side="bottom")
-        
-#         # Button to insert a new cell
-#         add = tk.Button(cell, text="+", command=lambda: self.add_cell(cell))
-#         add.grid(column=7)
-#         return cell
-
-        
-
-#     def edit_cell_callback(self, event):
-#         cell = event.widget.master
-#         if self.client is not None:
-#             # If a notebook client is attached, send the new text to the correct notebook cell
-#             self.client.update_cell(self.cells.index(cell), event.widget.get("1.0", "end-1c"))
-
-#     def remove_cell(self, cell):
-#         if self.client is not None:
-#             self.client.remove_cell(self.cells.index(cell))
-#         self.cells.remove(cell)
-#         cell.destroy()
-
-#     def sync(self, peer):
-#         self.client.sync(peer)
-#         self.render()
-
-#     def render(self):
-#         """
-#         Refresh the UI to reflect the current state of the notebook.
-#         """
-#         if self.client is not None:
-#             # Delete the current cells
-#             for cell in self.cells:
-#                 cell.destroy()
-#             self.cells = []
-
-#             # Recreate all the cells with the client's current state
-#             cell_data = self.client.get_cell_data()
-#             for text in cell_data:
-#                 cell = self.create_cell_frame(initial_text=text)
-#                 cell.grid(rowspan=5, columnspan=5)
-#                 # cell.pack(side="top", fill="both", expand=True)
-#                 self.cells.append(cell)
-#         else:
-#             for cell in self.cells:
-#                 cell.pack_forget()
-#             for cell in self.cells:
-#                 cell.pack(side="top", fill="both", expand=True)
-
-#     def start(self):
-#         """
-#         Start the UI. Note that this method blocks until the UI is closed.
-#         """
-#         self.add_cell()
-#         self.root.mainloop()
