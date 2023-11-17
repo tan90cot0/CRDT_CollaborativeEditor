@@ -7,7 +7,7 @@ A CRDT-based collaborative Jupyter notebook styled editor that facilitates seaml
 3. Open another terminal in the same directory.
 4. In one terminal type: python main.py --name alice --listen 55101 --peers bob:55102
 5. In the other, type: python main.py --name bob --listen 55102 --peers alice:55101
-5. In case you want to try with 3 or more users: Use the following example template: python main.py --name clara --listen 55103 --peers alice:55101 bob:55102
+6. In case you want to try with 3 or more users: Use the following example template: python main.py --name clara --listen 55103 --peers alice:55101 bob:55102
 
 # Features of the Editor
 1. You can edit the name of the file (Sequence of cells)
