@@ -8,14 +8,13 @@ class DistributedNotebook(Sequence):
     DistributedNotebook is a notebook designed for asynchronous collaboration. It
     consists of CRDT data structures which enable consistent merges between replicas.
     """
-    
 
-    def create_cell(self, cell_id, index=None):
+    def create_cell(self, index=None):
         """
         Creates a new cell at the given index. If the index is not specified, the cell
         is appended to the end of the notebook.
         """
-        cell = Cell(cell_id, id=self.id)
+        cell = Cell(id=self.id)
         if index is None:
             self.append(cell)
         else:
@@ -38,9 +37,3 @@ class DistributedNotebook(Sequence):
         Returns all the cell data in the notebook.
         """
         return [cell.get_text() for cell in self.get()]
-    
-    def get_cell_ids(self):
-        """
-        Returns all the cell ids in the notebook.
-        """
-        return [cell.cell_id for cell in self.get()]

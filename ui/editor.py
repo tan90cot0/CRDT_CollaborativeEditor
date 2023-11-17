@@ -78,7 +78,7 @@ class FileSystemEditor():
         file_name.destroy()
         new_file = tk.Button(self.root, text=name, command= lambda f=name: self.open_file(f), width=10, height=SMALL_BUTTON_HEIGHT)
         new_file.grid(row=self.file_index, column = 0)
-        self.files.append((new_file, delete, name))
+        self.files.append((new_file, delete))
  
         self.add_cell()
 
@@ -156,44 +156,51 @@ class FileSystemEditor():
         Refresh the UI to reflect the current state of the notebook.
         """
         if self.client is not None:
-            file_data = self.client.get_file_data()
             # Delete the current cells
             # for cell in self.notebook:
-                # if cell.cell_id not in cell_ids:
-                # cell.destroy()
-            #filenames have to be unique
-            temp_filenames = []
-            for (file, delete, filename) in self.files:
-                temp_filenames.append(filename)
-                if filename not in file_data:
-                    file.destroy()
-                    delete.destroy()
+            #     cell.destroy()
+
+            for (file, delete) in self.files:
+                file.destroy()
+                delete.destroy()
             
-            if self.heading is not None:
-                self.heading.destroy()
+            # if self.heading is not None:
+            #     self.heading.destroy()
 
             temp_notebook = []
             temp_files = []
-            temp_file_index = 0
+            self.file_index = 0
+
+            # Recreate all the cells with the client's current state
+            file_data = self.client.get_file_data()
 
             for filename in file_data:
-                temp_file_index+=1
-                if filename in temp_filenames:
-                    continue
+                # print(filename)
+                self.file_index+=1
                 new_file = tk.Button(self.root, text=str(filename), command= lambda f=filename: self.open_file(f), width=10, height=SMALL_BUTTON_HEIGHT)
                 new_file.grid(row=self.file_index, column = 0)
                 delete = tk.Button(self.root, text="X", command= lambda f=filename: self.delete_file(f), width=SMALL_BUTTON_WIDTH, height=SMALL_BUTTON_HEIGHT)
-                delete.grid(row=temp_file_index, column = 1)
-                temp_files.append((new_file, delete, filename))
+                delete.grid(row=self.file_index, column = 1)
+                temp_files.append((new_file, delete))
+            
+            # for i in range(self.file_index, len(self.files)):
+            #     self.files[i][0].destroy()
+            #     self.files[i][1].destroy()
+            
+            self.files = temp_files
+            # for file in temp_files:
+            #     print(file['text'])
 
             if self.curr_file is not None:
-                cell_data, cell_ids = self.client.get_cell_data(self.curr_file)
+                cell_data = self.client.get_cell_data(self.curr_file)
             elif self.files != []:
                 self.curr_file=self.files[0][0]['text']
-                cell_data, cell_ids = self.client.get_cell_data(self.curr_file)
+                cell_data = self.client.get_cell_data(self.curr_file)
             else:
-                cell_data, cell_ids = None, None
-
+                cell_data = None
+            
+            # print(self.curr_file)
+            # print(cell_data)
             if cell_data is not None:
                 file = tk.Label(self.root, text=self.curr_file, width=10, height=TOP_ROW_HEIGHT)
                 file.grid(row= 0, column = 2)

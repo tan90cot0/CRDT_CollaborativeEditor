@@ -8,12 +8,6 @@ class DistributedFileSystem(Sequence):
     DistributedFileSystem is a Folder of files designed for asynchronous collaboration. It
     consists of CRDT data structures which enable consistent merges between replicas.
     """
-    def __init__(self, id=..., ):
-        super().__init__(id)
-        self.file_ids = {}
-        self.filecell_ids = {}
-        self.curr_file_id = 0
-        self.curr_filecell_id = 0
 
     def create_file(self, filename=None):
         """
@@ -21,9 +15,7 @@ class DistributedFileSystem(Sequence):
         is appended to the end of the notebook.
         """
         file = DistributedNotebook(id=self.id)
-        self.file_ids[filename] = self.curr_file_id
-        file.create_cell(self.curr_file_id)
-        self.curr_file_id += 1
+        file.create_cell()
         file.update_cell(0,filename)
         self.append(file)
         # if index is None:
@@ -35,15 +27,12 @@ class DistributedFileSystem(Sequence):
         """
         Creates a new cell in the given file at the given index.
         """
-        self.filecell_ids[filename + "#" + str(index)] = self.curr_filecell_id
-        
         for file in self.get():
             if file.get_cell_data()[0] == filename:
                 if index is not None:
-                    file.create_cell(self.curr_filecell_id, index+1)
+                    file.create_cell(index+1)
                 else:
-                    file.create_cell(self.curr_filecell_id)
-        self.curr_filecell_id += 1
+                    file.create_cell()
 
     def update_filecell(self, filename, index, text):
         """
@@ -83,7 +72,7 @@ class DistributedFileSystem(Sequence):
         # return [note]
         for file in self.get():
             if file.get_cell_data()[0] == filename:
-                return file.get_cell_data()[1:], file.get_cell_ids()[1:]
+                return file.get_cell_data()[1:]
     
     def get_filename_data(self):
         """

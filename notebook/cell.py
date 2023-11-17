@@ -1,5 +1,4 @@
 import difflib
-import uuid
 
 from crdt.sequence import Sequence
 
@@ -7,10 +6,6 @@ class Cell(Sequence):
     """
     Cell represents the contents of a cell in a DistributedNotebook.
     """
-
-    def __init__(self, cell_id, id=..., ):
-        super().__init__(id)
-        self.cell_id = cell_id
 
     def append_text(self, text):
         """

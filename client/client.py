@@ -63,7 +63,6 @@ class FileSystemClient():
     def auto_sync(self):
         
         last_synced_time = time.time()
-        random_sync_interval = 10 + 5 *random.random() 
         random_sync_interval = 0.5+ random.random() 
         while True:
             if time.time() - last_synced_time < random_sync_interval or not self.connected:
