@@ -118,20 +118,18 @@ class FileSystemEditor():
 
         # Button to remove the cell
         remove = tk.Button(cell, text="X", command=lambda: self.remove_cell(cell), width=SMALL_BUTTON_WIDTH, height=SMALL_BUTTON_HEIGHT)
-        remove.grid(row=6*depth+1, column=7)
+        remove.grid(row=5*depth+1, column=7)
         
         # Text editor widget
         text = tk.Text(cell, wrap="char", highlightbackground="gray")
-        text.grid(row=6*depth+1, column=2, columnspan = 5, rowspan = 5)
+        text.grid(row=5*depth+1, column=2, columnspan = 5, rowspan = 5)
         text.insert("end", initial_text)
         text.bind("<KeyRelease>", self.edit_cell_callback)
-        text.focus_set()
         # text.pack(side="bottom")
         
         # Button to insert a new cell
         add = tk.Button(cell, text="+", command=lambda: self.add_cell(cell), width=SMALL_BUTTON_WIDTH, height=SMALL_BUTTON_HEIGHT)
         add.grid(row=6*depth+6, column=7)
-        cell.grid(row=6*depth+1, column=2, columnspan = 5, rowspan = 5)
         return cell
 
     def edit_cell_callback(self, event):
@@ -157,18 +155,18 @@ class FileSystemEditor():
         """
         if self.client is not None:
             # Delete the current cells
-            # for cell in self.notebook:
-            #     cell.destroy()
+            for cell in self.notebook:
+                cell.destroy()
 
             for (file, delete) in self.files:
                 file.destroy()
                 delete.destroy()
             
-            # if self.heading is not None:
-            #     self.heading.destroy()
+            if self.heading is not None:
+                self.heading.destroy()
 
-            temp_notebook = []
-            temp_files = []
+            self.notebook = []
+            self.files = []
             self.file_index = 0
 
             # Recreate all the cells with the client's current state
@@ -181,14 +179,9 @@ class FileSystemEditor():
                 new_file.grid(row=self.file_index, column = 0)
                 delete = tk.Button(self.root, text="X", command= lambda f=filename: self.delete_file(f), width=SMALL_BUTTON_WIDTH, height=SMALL_BUTTON_HEIGHT)
                 delete.grid(row=self.file_index, column = 1)
-                temp_files.append((new_file, delete))
+                self.files.append((new_file, delete))
             
-            # for i in range(self.file_index, len(self.files)):
-            #     self.files[i][0].destroy()
-            #     self.files[i][1].destroy()
-            
-            self.files = temp_files
-            # for file in temp_files:
+            # for file in self.files:
             #     print(file['text'])
 
             if self.curr_file is not None:
@@ -207,30 +200,16 @@ class FileSystemEditor():
                 self.heading = file
                 index = 0
                 for text in cell_data:
-                    t = tk.Text(self.notebook[index], wrap="char", highlightbackground="gray")
-                    t.grid(row=6*index+1, column=2, columnspan = 5, rowspan = 5)
-                    t.insert("end", text)
-                    t.bind("<KeyRelease>", self.edit_cell_callback)
-                    t.focus_set()
-                    # cell = self.create_cell_frame(initial_text=text, depth=index)
-                    # cell.grid(row=6*index+1, column=2, rowspan=5, columnspan=5)
+                    cell = self.create_cell_frame(initial_text=text, depth=index)
+                    cell.grid(row=6*index+1, column=2, rowspan=5, columnspan=5)
                     # cell.pack(side="top", fill="both", expand=True)
-                    # temp_notebook.append(cell)
+                    self.notebook.append(cell)
                     index+=1
-                for i in range(index, len(self.notebook)):
-                    self.notebook[i].destroy()
-                self.notebook = self.notebook[:index]
-            elif self.heading is not None:
-                self.heading.destroy()
         else:
-            for cell in temp_notebook:
+            for cell in self.notebook:
                 cell.pack_forget()
-            for cell in temp_notebook:
+            for cell in self.notebook:
                 cell.pack(side="top", fill="both", expand=True)
-
-        # self.notebook = temp_notebook
-        # self.files = temp_files
-        # self.file_index = temp_file_index
 
     def start(self):
         """
